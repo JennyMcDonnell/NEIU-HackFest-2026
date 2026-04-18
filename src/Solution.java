@@ -3,18 +3,17 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 public class Solution {
+    //weather_list.add(Weather) to add data to the list
     // weather_data.put(date, Weather) to add data to the map
     public static List<Weather> weather_list = new ArrayList<>();
     public static Map<String, Weather> weather_data = new HashMap<>();
 
     public static void main(String[] args) {
-
-        //initalize variables for when input is read lat
+        //initalize variables for when input is read later
         int query = 0;
         String query_date = "";
-        //prevent query variable from not initalized
+        //prevent query variable from not being initalized
 
         //Load data
         try(Scanner reader = new Scanner(System.in)){
@@ -23,13 +22,12 @@ public class Solution {
             //data population loop
             for(int i = 0; i < LineCount; i++) {
                 String data = reader.nextLine();
-                String[] weather_entry = data.split(","); // length should be 5, [0] date, [1] temp, [2] humidity, [3] windSpeed, [4] rainfall
-                //check for query
+                String[] weather_entry = data.split(",");
 
-
+                //do not accept entries that are just a date
                 if(weather_entry.length < 2) { break; }
 
-
+                //validate date format
                 Pattern rg_date_format = Pattern.compile("^(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])-(19|20)\\d{2}$", Pattern.CASE_INSENSITIVE);
                 Matcher matcher = rg_date_format.matcher(weather_entry[0]);
                 boolean matchFound = matcher.find();
@@ -38,31 +36,26 @@ public class Solution {
                     weather_data.put(weather_entry[0], newWeather);
                     weather_list.add(newWeather);
                 }
-
-                //access temporary array that contains weather data
-                //[0] date, [1] temp, [2] humidity, [3] windSpeed, [4] rainfall
-
-
-                //}
             }
+
+            //remnent from an earlier part of development. Partially redundant, but leaving as is for now.
             query = Integer.parseInt(reader.nextLine());
             if(query == 1){
                 query = 1;
-
             }
             else if(query == 2) {
                 query = 2;
                 query_date = reader.nextLine();
-
             }
         }
         catch(Exception e) {
             System.out.println("unexpected exception:" + e.getMessage());
         }
 
-        //user input
+
+        //input mode and output handling
         System.out.println("Records loaded -> " + weather_list.size());
-        if (query == 1) {
+        if (query == 1) { //average/totalled stats mode
             if (weather_list.isEmpty()) {
                 System.out.println("\nNo valid records available to show any stats");
 
@@ -85,8 +78,7 @@ public class Solution {
             }
         }
 
-        //Note: change to use map not list
-        else if (query == 2) {
+        else if (query == 2) { //stats for a specific date mode
             //check if date exists in the map
             System.out.println("\nSearch by Date:");
             if (weather_data.containsKey(query_date)) {
@@ -103,6 +95,7 @@ public class Solution {
         }
 
     } //end of main method
+
 
     /*
     -------------------Calculation methods-------------------
@@ -170,6 +163,7 @@ public class Solution {
 }//end of main class
 
 
+//We generally prefer classes in seperate files, but the submission guidelines require a single file
 class Weather {
     //variables
     private String date;
@@ -204,7 +198,7 @@ class Weather {
         return windspeed;
     }
 
-    //setters
+    //setters (unused in this solution, but provide a robust way to correct errored stats
     public void setDate(String date) {
         this.date = date;
     }
